@@ -7,34 +7,63 @@ class GildedRose(object):
 
     def update_price(self):
         for item in self.items:
-            if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
-                if item.price > 0:
-                    if item.name != "Sulfuras, Hand of Ragnaros":
-                        item.price = item.price - 1
-            else:
-                if item.price < 50:
-                    item.price = item.price + 1
-                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                        if item.sell_in < 11:
-                            if item.price < 50:
-                                item.price = item.price + 1
-                        if item.sell_in < 6:
-                            if item.price < 50:
-                                item.price = item.price + 1
-            if item.name != "Sulfuras, Hand of Ragnaros":
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        if item.price > 0:
-                            if item.name != "Sulfuras, Hand of Ragnaros":
-                                item.price = item.price - 1
-                    else:
-                        item.price = item.price - item.price
-                else:
-                    if item.price < 50:
-                        item.price = item.price + 1
+            match item.name:
+                case "Aged Brie":
+                    AgedBrie_and_Backstage_passes.update_price(item)
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    AgedBrie_and_Backstage_passes.update_price(item)
+                case "Elixir of the Mongoose":
+                    Elixir_of_the_Mongoose_and_Dexterity_Vest.update_price(item)
+                case "+5 Dexterity Vest":
+                    Elixir_of_the_Mongoose_and_Dexterity_Vest.update_price(item)
+                case "Conjured Mana Cake":
+                    Conjured_Mana_Cake.update_price(item)
 
+            
+
+                
+class AgedBrie_and_Backstage_passes(GildedRose):
+    @staticmethod
+    def update_price(item):
+        if item.price < 50:
+            if item.sell_in < 50 and item.sell_in >= 10:
+                item.price += 1
+                item.sell_in -= 1
+
+            elif item.sell_in < 10 and item.sell_in >= 5:
+                item.price += 2
+                item.sell_in -= 1
+
+            elif item.sell_in < 5 and item.sell_in >= 0:
+                item.sell_in -= 1
+                item.price += 3
+
+            else:
+                item.price = 0
+
+        return item.price, item.sell_in
+    
+class Elixir_of_the_Mongoose_and_Dexterity_Vest(GildedRose):
+    @staticmethod
+    def update_price(item):
+        if item.sell_in > 0:
+            item.sell_in -= 1
+            item.price -= 1
+        
+        else:
+            item.price -= 2
+        return item.price, item.sell_in
+
+class Conjured_Mana_Cake(GildedRose):
+    @staticmethod
+    def update_price(item):
+        if item.sell_in > 0:
+            item.sell_in -= 1
+            item.price -= 2
+        
+        else:
+            item.price -= 4
+        return item.price, item.sell_in
 
 class Item:
     def __init__(self, name, sell_in, price):
@@ -44,3 +73,7 @@ class Item:
 
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.price)
+
+
+
+        
